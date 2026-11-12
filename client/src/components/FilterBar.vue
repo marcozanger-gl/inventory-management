@@ -59,9 +59,10 @@
         class="reset-filters-btn"
         @click="resetFilters"
         :disabled="!hasActiveFilters"
-        title="Reset all filters"
+        :title="t('filters.reset')"
+        :aria-label="t('filters.reset')"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
         </svg>
       </button>
@@ -106,28 +107,43 @@ export default {
   border-bottom: 1px solid #e2e8f0;
   padding: 0.75rem 0;
   position: sticky;
-  top: 70px;
-  z-index: 90;
+  top: 0; /* no top bar at >=768px */
+  z-index: var(--z-sticky);
+}
+
+/* Below 768px the mobile top bar is sticky above the filters */
+@media (max-width: 767px) {
+  .filters-bar {
+    top: var(--topbar-height);
+  }
 }
 
 .filters-container {
-  max-width: 1600px;
-  margin: 0 auto;
-  padding: 0 2rem;
+  /* Fills the column next to the sidebar; padding mirrors .main-content */
+  padding: 0 var(--space-7);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: var(--space-4);
+}
+
+@media (max-width: 767px) {
+  .filters-container {
+    padding: 0 var(--space-4);
+  }
 }
 
 .filters-grid {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
   flex: 1;
+  min-width: 0;
 }
 
 .filter-group {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem;
 }
@@ -150,6 +166,7 @@ export default {
   transition: all 0.2s;
   font-weight: 500;
   min-width: 140px;
+  max-width: 100%;
 }
 
 .filter-select:hover {

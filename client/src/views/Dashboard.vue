@@ -812,13 +812,25 @@ export default {
 
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.25rem;
   margin-bottom: 1.5rem;
 }
 
+/* Let cards shrink below content width; wide content scrolls inside the card */
+.charts-grid > .chart-card {
+  min-width: 0;
+  overflow-x: auto;
+}
+
 .chart-card.full-width {
   grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
 }
 
 .chart-content {

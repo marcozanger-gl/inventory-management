@@ -374,13 +374,16 @@ export default {
   justify-content: space-around;
   height: 250px;
   gap: 0.5rem;
+  /* Scroll inside the chart instead of overflowing the page */
+  overflow-x: auto;
 }
 
 .bar-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  flex: 1 0 auto;
+  min-width: 40px;
   max-width: 80px;
 }
 

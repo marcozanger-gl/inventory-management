@@ -1,27 +1,32 @@
 <template>
-  <div class="profile-menu">
+  <div class="profile-menu" :class="{ 'is-compact': compact }">
     <button
       class="profile-button"
       @click="toggleDropdown"
+      :aria-expanded="isDropdownOpen"
+      aria-haspopup="true"
+      :aria-label="t('profile.menu') + ': ' + currentUser.name"
       @blur="handleBlur"
     >
       <div class="avatar">
         {{ getInitials(currentUser.name) }}
       </div>
-      <span class="profile-name">{{ currentUser.name }}</span>
+      <span v-if="!compact" class="profile-name">{{ currentUser.name }}</span>
       <svg
+        v-if="!compact"
         class="chevron"
         :class="{ 'chevron-open': isDropdownOpen }"
         width="16"
         height="16"
         viewBox="0 0 16 16"
         fill="none"
+        aria-hidden="true"
       >
         <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </button>
 
-    <div v-if="isDropdownOpen" class="dropdown-menu">
+    <div v-if="isDropdownOpen" class="dropdown-menu" :class="`placement-${placement}`">
       <div class="dropdown-header">
         <div class="avatar-large">
           {{ getInitials(currentUser.name) }}
@@ -38,7 +43,7 @@
         class="dropdown-item"
         @mousedown.prevent="showProfileDetails"
       >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M9 9C10.6569 9 12 7.65685 12 6C12 4.34315 10.6569 3 9 3C7.34315 3 6 4.34315 6 6C6 7.65685 7.34315 9 9 9Z" stroke="currentColor" stroke-width="1.5"/>
           <path d="M15 15C15 12.7909 12.3137 11 9 11C5.68629 11 3 12.7909 3 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
         </svg>
@@ -49,7 +54,7 @@
         class="dropdown-item"
         @mousedown.prevent="showTasks"
       >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M15 3H3C2.44772 3 2 3.44772 2 4V14C2 14.5523 2.44772 15 3 15H15C15.5523 15 16 14.5523 16 14V4C16 3.44772 15.5523 3 15 3Z" stroke="currentColor" stroke-width="1.5"/>
           <path d="M6 7L8 9L12 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -63,7 +68,7 @@
         class="dropdown-item logout"
         @mousedown.prevent="handleLogout"
       >
-        <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
           <path d="M7 15H4C3.44772 15 3 14.5523 3 14V4C3 3.44772 3.44772 3 4 3H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
           <path d="M11 12L15 9M15 9L11 6M15 9H7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
@@ -80,6 +85,12 @@ import { useI18n } from '../composables/useI18n'
 
 const { currentUser, logout, getInitials } = useAuth()
 const { t } = useI18n()
+
+// compact: icon/avatar only. placement: bottom-end (default) | top-start | right-end
+defineProps({
+  compact: { type: Boolean, default: false },
+  placement: { type: String, default: 'bottom-end' }
+})
 
 const isDropdownOpen = ref(false)
 const emit = defineEmits(['show-profile-details', 'show-tasks'])
@@ -176,8 +187,27 @@ const handleLogout = () => {
   border: 1px solid #e2e8f0;
   border-radius: 10px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: var(--z-dropdown);
   overflow: hidden;
+  max-width: calc(100vw - 2rem);
+}
+
+.dropdown-menu.placement-top-start {
+  top: auto;
+  right: auto;
+  bottom: calc(100% + 0.5rem);
+  left: 0;
+}
+
+.dropdown-menu.placement-right-end {
+  top: auto;
+  right: auto;
+  bottom: 0;
+  left: calc(100% + 0.5rem);
+}
+
+.is-compact .profile-button {
+  padding: 0.375rem;
 }
 
 .dropdown-header {
@@ -277,5 +307,11 @@ const handleLogout = () => {
   border-radius: 12px;
   min-width: 20px;
   text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .chevron {
+    transition: none;
+  }
 }
 </style>
