@@ -492,6 +492,11 @@ export default {
 </script>
 
 <style scoped>
+.card-header {
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
 .stat-change {
   margin-top: 0.75rem;
   font-size: 0.875rem;
@@ -519,6 +524,8 @@ export default {
 
 .chart-legend {
   display: flex;
+  flex-wrap: wrap;
+  min-width: 0;
   gap: 1.5rem;
   font-size: 0.875rem;
 }
@@ -617,6 +624,8 @@ export default {
   display: flex;
   gap: 1.5rem;
   height: 350px;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 .y-axis {
@@ -631,6 +640,8 @@ export default {
 
 .chart-area {
   flex: 1;
+  min-width: 0;
+  overflow-x: auto;
   display: flex;
   align-items: flex-end;
   justify-content: space-around;
@@ -641,7 +652,8 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+  flex: 1 0 auto;
+  min-width: 44px;
   height: 100%;
 }
 
@@ -694,7 +706,7 @@ export default {
 
 .two-column-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(450px, 100%), 1fr));
   gap: 1.75rem;
 }
 
